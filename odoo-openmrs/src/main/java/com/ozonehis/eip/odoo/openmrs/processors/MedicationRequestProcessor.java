@@ -7,8 +7,8 @@
  */
 package com.ozonehis.eip.odoo.openmrs.processors;
 
-import com.ozonehis.eip.odoo.openmrs.handlers.PartnerHandler;
-import com.ozonehis.eip.odoo.openmrs.handlers.SaleOrderHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.PartnerHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.SaleOrderHandler;
 import com.ozonehis.eip.odoo.openmrs.model.Partner;
 import com.ozonehis.eip.odoo.openmrs.model.SaleOrder;
 import java.util.List;

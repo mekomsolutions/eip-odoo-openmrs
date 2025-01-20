@@ -12,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-import com.ozonehis.eip.odoo.openmrs.handlers.CountryHandler;
-import com.ozonehis.eip.odoo.openmrs.handlers.CountryStateHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.CountryHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.CountryStateHandler;
 import com.ozonehis.eip.odoo.openmrs.model.Partner;
 import java.util.Calendar;
 import java.util.Collections;

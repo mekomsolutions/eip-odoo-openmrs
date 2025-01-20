@@ -23,23 +23,28 @@ import com.ozonehis.camel.test.infra.odoo.services.OdooServiceFactory;
 import com.ozonehis.eip.odoo.openmrs.client.OdooClient;
 import com.ozonehis.eip.odoo.openmrs.client.OdooUtils;
 import com.ozonehis.eip.odoo.openmrs.component.OdooComponent;
-import com.ozonehis.eip.odoo.openmrs.handlers.CountryHandler;
-import com.ozonehis.eip.odoo.openmrs.handlers.CountryStateHandler;
-import com.ozonehis.eip.odoo.openmrs.handlers.ObservationHandler;
-import com.ozonehis.eip.odoo.openmrs.handlers.PartnerHandler;
-import com.ozonehis.eip.odoo.openmrs.handlers.ProductHandler;
-import com.ozonehis.eip.odoo.openmrs.handlers.SaleOrderHandler;
-import com.ozonehis.eip.odoo.openmrs.handlers.SaleOrderLineHandler;
-import com.ozonehis.eip.odoo.openmrs.handlers.UomHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.CountryHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.CountryStateHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.PartnerHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.ProductHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.SaleOrderHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.SaleOrderLineHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.UomHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.EncounterHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.ObservationHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.PatientHandler;
 import com.ozonehis.eip.odoo.openmrs.mapper.odoo.PartnerMapper;
 import com.ozonehis.eip.odoo.openmrs.mapper.odoo.SaleOrderLineMapper;
 import com.ozonehis.eip.odoo.openmrs.mapper.odoo.SaleOrderMapper;
 import com.ozonehis.eip.odoo.openmrs.processors.MedicationRequestProcessor;
 import com.ozonehis.eip.odoo.openmrs.processors.PatientProcessor;
 import com.ozonehis.eip.odoo.openmrs.processors.ServiceRequestProcessor;
+import com.ozonehis.eip.odoo.openmrs.processors.SupplyRequestProcessor;
 import com.ozonehis.eip.odoo.openmrs.routes.MedicationRequestRouting;
 import com.ozonehis.eip.odoo.openmrs.routes.PatientRouting;
+import com.ozonehis.eip.odoo.openmrs.routes.ProcedureRouting;
 import com.ozonehis.eip.odoo.openmrs.routes.ServiceRequestRouting;
+import com.ozonehis.eip.odoo.openmrs.routes.SupplyRequestRouting;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -186,6 +191,12 @@ public abstract class BaseRouteIntegrationTest {
         BasicAuthInterceptor authInterceptor = new BasicAuthInterceptor(username, password);
         client.registerInterceptor(authInterceptor);
 
+        PatientHandler patientHandler = new PatientHandler(client);
+        patientHandler.setOpenmrsFhirClient(client);
+
+        EncounterHandler encounterHandler = new EncounterHandler();
+        encounterHandler.setOpenmrsFhirClient(client);
+
         ObservationHandler observationHandler = new ObservationHandler();
         observationHandler.setOpenmrsFhirClient(client);
 
@@ -223,9 +234,23 @@ public abstract class BaseRouteIntegrationTest {
         ServiceRequestRouting serviceRequestRouting = new ServiceRequestRouting();
         serviceRequestRouting.setServiceRequestProcessor(serviceRequestProcessor);
 
+        ProcedureRouting procedureRouting = new ProcedureRouting();
+        procedureRouting.setServiceRequestProcessor(serviceRequestProcessor);
+
+        SupplyRequestProcessor supplyRequestProcessor = new SupplyRequestProcessor();
+        supplyRequestProcessor.setSaleOrderHandler(saleOrderHandler);
+        supplyRequestProcessor.setPartnerHandler(partnerHandler);
+        supplyRequestProcessor.setEncounterHandler(encounterHandler);
+        supplyRequestProcessor.setPatientHandler(patientHandler);
+
+        SupplyRequestRouting supplyRequestRouting = new SupplyRequestRouting();
+        supplyRequestRouting.setSupplyRequestProcessor(supplyRequestProcessor);
+
         context.addRoutes(patientRouting);
         context.addRoutes(medicationRequestRouting);
         context.addRoutes(serviceRequestRouting);
+        context.addRoutes(procedureRouting);
+        context.addRoutes(supplyRequestRouting);
 
         return context;
     }

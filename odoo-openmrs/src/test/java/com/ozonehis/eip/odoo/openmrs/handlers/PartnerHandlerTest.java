@@ -21,6 +21,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import com.ozonehis.eip.odoo.openmrs.Constants;
 import com.ozonehis.eip.odoo.openmrs.client.OdooClient;
 import com.ozonehis.eip.odoo.openmrs.client.OdooUtils;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.PartnerHandler;
 import com.ozonehis.eip.odoo.openmrs.mapper.odoo.PartnerMapper;
 import com.ozonehis.eip.odoo.openmrs.model.Partner;
 import java.util.HashMap;

@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package com.ozonehis.eip.odoo.openmrs.handlers;
+package com.ozonehis.eip.odoo.openmrs.handlers.odoo;
 
 import static java.util.Arrays.asList;
 
@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.MedicationRequest;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ServiceRequest;
+import org.hl7.fhir.r4.model.SupplyRequest;
 import org.openmrs.eip.EIPException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -65,6 +66,10 @@ public class ProductHandler {
             String id =
                     medicationRequest.getMedicationReference().getReference().split("/")[1];
             log.debug("ProductHandler: MedicationRequest reference {}", id);
+            return id;
+        } else if (resource instanceof SupplyRequest supplyRequest) {
+            String id = supplyRequest.getItemReference().getReference().split("/")[1];
+            log.debug("ProductHandler: SupplyRequest reference {}", id);
             return id;
         } else {
             throw new IllegalArgumentException(

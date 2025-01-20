@@ -24,7 +24,7 @@ import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.r4.model.ServiceRequest;
+import org.hl7.fhir.r4.model.SupplyRequest;
 import org.openmrs.eip.fhir.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Setter
 @Component
-public class ServiceRequestProcessor implements Processor {
+public class SupplyRequestProcessor implements Processor {
 
     @Autowired
     private SaleOrderHandler saleOrderHandler;
@@ -54,34 +54,35 @@ public class ServiceRequestProcessor implements Processor {
 
             Patient patient = null;
             Encounter encounter = null;
-            ServiceRequest serviceRequest = null;
+            SupplyRequest supplyRequest = null;
             for (Bundle.BundleEntryComponent entry : entries) {
                 Resource resource = entry.getResource();
                 if (resource instanceof Patient) {
                     patient = (Patient) resource;
                 } else if (resource instanceof Encounter) {
                     encounter = (Encounter) resource;
-                } else if (resource instanceof ServiceRequest) {
-                    serviceRequest = (ServiceRequest) resource;
+                } else if (resource instanceof SupplyRequest) {
+                    supplyRequest = (SupplyRequest) resource;
                 }
             }
 
-            if (serviceRequest == null) {
-                throw new CamelExecutionException("Invalid Bundle. Bundle must contain ServiceRequest", exchange);
+            if (supplyRequest == null) {
+                throw new CamelExecutionException("Invalid Bundle. Bundle must contain SupplyRequest", exchange);
             }
+            log.info("Processing SupplyRequest for Patient with UUID {}", supplyRequest.getId());
             if (patient == null) {
                 patient = patientHandler.getPatientByPatientID(
-                        serviceRequest.getSubject().getReference().split("/")[1]);
+                        supplyRequest.getDeliverTo().getReference().split("/")[1]);
             }
             if (encounter == null) {
                 encounter = encounterHandler.getEncounterByEncounterID(
-                        serviceRequest.getEncounter().getReference().split("/")[1]);
+                        supplyRequest.getReasonReference().get(0).getReference().split("/")[1]);
             }
             if (patient == null || encounter == null) {
                 throw new CamelExecutionException(
                         "Invalid Bundle. Bundle must contain Patient and Encounter", exchange);
             } else {
-                log.debug("Processing ServiceRequest for Patient with UUID {}", patient.getIdPart());
+                log.debug("Processing SupplyRequest for Patient with UUID {}", patient.getIdPart());
                 String eventType = exchange.getMessage().getHeader(Constants.HEADER_FHIR_EVENT_TYPE, String.class);
                 if (eventType == null) {
                     throw new IllegalArgumentException("Event type not found in the exchange headers.");
@@ -89,12 +90,11 @@ public class ServiceRequestProcessor implements Processor {
                 String encounterVisitUuid = encounter.getPartOf().getReference().split("/")[1];
                 Partner partner = partnerHandler.createOrUpdatePartner(producerTemplate, patient);
                 if ("c".equals(eventType) || "u".equals(eventType)) {
-                    if (serviceRequest.getStatus().equals(ServiceRequest.ServiceRequestStatus.ACTIVE)
-                            && serviceRequest.getIntent().equals(ServiceRequest.ServiceRequestIntent.ORDER)) {
+                    if (supplyRequest.getStatus().equals(SupplyRequest.SupplyRequestStatus.ACTIVE)) {
                         SaleOrder saleOrder = saleOrderHandler.getDraftSaleOrderIfExistsByVisitId(encounterVisitUuid);
                         if (saleOrder != null) {
                             saleOrderHandler.updateSaleOrderIfExistsWithSaleOrderLine(
-                                    serviceRequest,
+                                    supplyRequest,
                                     saleOrder,
                                     encounterVisitUuid,
                                     partner.getPartnerId(),
@@ -102,7 +102,7 @@ public class ServiceRequestProcessor implements Processor {
                                     producerTemplate);
                         } else {
                             saleOrderHandler.createSaleOrderWithSaleOrderLine(
-                                    serviceRequest,
+                                    supplyRequest,
                                     encounter,
                                     partner,
                                     encounterVisitUuid,
@@ -111,11 +111,11 @@ public class ServiceRequestProcessor implements Processor {
                         }
                     } else {
                         // Executed when MODIFY option is selected in OpenMRS
-                        saleOrderHandler.deleteSaleOrderLine(serviceRequest, encounterVisitUuid, producerTemplate);
+                        saleOrderHandler.deleteSaleOrderLine(supplyRequest, encounterVisitUuid, producerTemplate);
                     }
                 } else if ("d".equals(eventType)) {
                     // Executed when DISCONTINUE option is selected in OpenMRS
-                    saleOrderHandler.deleteSaleOrderLine(serviceRequest, encounterVisitUuid, producerTemplate);
+                    saleOrderHandler.deleteSaleOrderLine(supplyRequest, encounterVisitUuid, producerTemplate);
                     saleOrderHandler.cancelSaleOrderWhenNoSaleOrderLine(
                             partner.getPartnerId(), encounterVisitUuid, producerTemplate);
                 } else {
@@ -123,7 +123,7 @@ public class ServiceRequestProcessor implements Processor {
                 }
             }
         } catch (Exception e) {
-            throw new CamelExecutionException("Error processing ServiceRequest", exchange, e);
+            throw new CamelExecutionException("Error processing SupplyRequest", exchange, e);
         }
     }
 }

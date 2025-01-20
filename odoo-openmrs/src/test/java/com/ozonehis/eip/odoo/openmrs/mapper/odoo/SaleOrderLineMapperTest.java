@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.ozonehis.eip.odoo.openmrs.model.SaleOrderLine;
+import java.util.Collections;
 import java.util.List;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
@@ -22,6 +23,7 @@ import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ServiceRequest;
+import org.hl7.fhir.r4.model.SupplyRequest;
 import org.hl7.fhir.r4.model.Timing;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,6 +46,18 @@ class SaleOrderLineMapperTest {
     private static final String COMPLETE_BLOOD_COUNT_ID = "3d597a15-b08f-4c35-8a42-0c15f9a19fa6";
 
     private static final String PRACTITIONER_ID = "e5ca6578-fb37-4900-a054-c68db82a551c";
+
+    private static final String SUPPLY_REQUEST_ID = "9gv050e1-s1be-5b4c-b107-c48d2db47r11";
+
+    private static final String ENCOUNTER_ID = "4d6d21cc-a6a5-4714-9c44-631d9d4cb3fc";
+
+    private static final String ADHESIVE_CODE = "90165e66-615d-4219-ba2c-50ed46a51bff";
+
+    private static final String QUANTITY_CODE = "162396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+
+    private static final String ADHESIVE_DISPLAY = "Adhesive 5cm x 9m";
+
+    private static final String PATIENT_ID = "3ee4f5fc-6299-4c0e-a56e-dad957118edc";
 
     private SaleOrderLineMapper<Resource> saleOrderLineMapper;
 
@@ -134,6 +148,30 @@ class SaleOrderLineMapperTest {
         assertEquals(
                 "medication | 10 Tablet | 7 Tablet - thrice daily - 10 day | Orderer: requester",
                 saleOrderLine.getSaleOrderLineName());
+    }
+
+    @Test
+    public void shouldMapSupplyRequestToSaleOrderLine() {
+        // setup
+        SupplyRequest supplyRequest = new SupplyRequest();
+        supplyRequest.setId(SUPPLY_REQUEST_ID);
+        supplyRequest.setItem(
+                new Reference().setReference("MedicalSupply/" + ADHESIVE_CODE).setDisplay(ADHESIVE_DISPLAY));
+        supplyRequest.setReasonReference(Collections.singletonList(
+                new Reference().setType("Encounter").setReference("Encounter/" + ENCOUNTER_ID)));
+        supplyRequest.setQuantity(new Quantity().setValue(10).setCode(QUANTITY_CODE));
+        supplyRequest.setRequester(new Reference().setReference(PRACTITIONER_ID).setDisplay("John Doe"));
+        supplyRequest.setDeliverTo(
+                new Reference().setReference("Patient/" + PATIENT_ID).setDisplay("Tim"));
+        supplyRequest.setStatus(SupplyRequest.SupplyRequestStatus.ACTIVE);
+
+        // Act
+        SaleOrderLine saleOrderLine = saleOrderLineMapper.toOdoo(supplyRequest);
+
+        // verify
+        assertNotNull(saleOrderLine);
+        assertEquals(10.0f, saleOrderLine.getSaleOrderLineProductUomQty());
+        assertEquals(ADHESIVE_DISPLAY + " | Orderer: John Doe", saleOrderLine.getSaleOrderLineName());
     }
 
     @Test

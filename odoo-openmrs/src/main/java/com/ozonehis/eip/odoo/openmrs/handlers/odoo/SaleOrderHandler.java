@@ -5,13 +5,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package com.ozonehis.eip.odoo.openmrs.handlers;
+package com.ozonehis.eip.odoo.openmrs.handlers.odoo;
 
 import static java.util.Arrays.asList;
 
 import com.ozonehis.eip.odoo.openmrs.Constants;
 import com.ozonehis.eip.odoo.openmrs.client.OdooClient;
 import com.ozonehis.eip.odoo.openmrs.client.OdooUtils;
+import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.ObservationHandler;
 import com.ozonehis.eip.odoo.openmrs.mapper.odoo.SaleOrderMapper;
 import com.ozonehis.eip.odoo.openmrs.model.Partner;
 import com.ozonehis.eip.odoo.openmrs.model.Product;

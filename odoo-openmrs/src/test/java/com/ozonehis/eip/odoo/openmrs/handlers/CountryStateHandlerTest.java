@@ -17,6 +17,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.ozonehis.eip.odoo.openmrs.Constants;
 import com.ozonehis.eip.odoo.openmrs.client.OdooClient;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.CountryStateHandler;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

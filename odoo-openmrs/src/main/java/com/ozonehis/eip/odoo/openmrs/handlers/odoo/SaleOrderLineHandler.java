@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package com.ozonehis.eip.odoo.openmrs.handlers;
+package com.ozonehis.eip.odoo.openmrs.handlers.odoo;
 
 import static java.util.Arrays.asList;
 
@@ -26,6 +26,7 @@ import org.apache.camel.ProducerTemplate;
 import org.hl7.fhir.r4.model.MedicationRequest;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ServiceRequest;
+import org.hl7.fhir.r4.model.SupplyRequest;
 import org.openmrs.eip.EIPException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -71,7 +72,7 @@ public class SaleOrderLineHandler {
         SaleOrderLine saleOrderLine = saleOrderLineMapper.toOdoo(resource);
         saleOrderLine.setSaleOrderLineProductId(product.getProductResId());
         saleOrderLine.setSaleOrderLineOrderId(saleOrder.getOrderId());
-        if (resource instanceof MedicationRequest) {
+        if (resource instanceof MedicationRequest || resource instanceof SupplyRequest) {
             String uomExternalId = (String) saleOrderLine.getSaleOrderLineProductUom();
             Uom uom = uomHandler.getUom(uomExternalId);
             log.debug("SaleOrderLineHandler: Fetched Uom {}", uom);

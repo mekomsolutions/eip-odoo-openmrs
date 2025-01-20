@@ -19,6 +19,7 @@ import ca.uhn.fhir.rest.gclient.IParam;
 import ca.uhn.fhir.rest.gclient.IQuery;
 import ca.uhn.fhir.rest.gclient.ISort;
 import ca.uhn.fhir.rest.gclient.IUntypedQuery;
+import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.ObservationHandler;
 import java.util.Collections;
 import java.util.UUID;
 import org.hl7.fhir.r4.model.Bundle;

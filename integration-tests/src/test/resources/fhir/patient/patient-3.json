@@ -1,0 +1,83 @@
+{
+  "resourceType": "Patient",
+  "id": "3ee4f5fc-6299-4c0e-a56e-dad957118edc",
+  "meta": {
+    "versionId": "1737035895000",
+    "lastUpdated": "2025-01-16T13:58:15.000+00:00"
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><table class=\"hapiPropertyTable\"><tbody><tr><td>Id:</td><td>3ee4f5fc-6299-4c0e-a56e-dad957118edc</td></tr><tr><td>Identifier:</td><td><div>H-3000000</div><div>100000Y</div></td></tr><tr><td>Active:</td><td>true</td></tr><tr><td>Name:</td><td> Siddharth <b>VAISH </b></td></tr><tr><td>Gender:</td><td>MALE</td></tr><tr><td>Birth Date:</td><td>30/12/1997</td></tr><tr><td>Deceased:</td><td>false</td></tr><tr><td>Address:</td><td><span>Dehradun </span><span>Uttarakhand </span><span>Haiti </span></td></tr></tbody></table></div>"
+  },
+  "identifier": [
+    {
+      "id": "945b4dd9-7fc6-4669-b424-c20f531849ac",
+      "extension": [
+        {
+          "url": "http://fhir.openmrs.org/ext/patient/identifier#location",
+          "valueReference": {
+            "reference": "Location/35f62cd8-e88b-4b78-8150-ac172b014489",
+            "type": "Location",
+            "display": "Emergency - OPD"
+          }
+        }
+      ],
+      "use": "official",
+      "type": {
+        "coding": [
+          {
+            "code": "b303f207-a094-457f-9833-f1cdc7b5d184"
+          }
+        ],
+        "text": "Numéro Dossier"
+      },
+      "value": "H-3000000"
+    },
+    {
+      "id": "5dd58c7b-28c1-4825-94ab-317cc6012f33",
+      "extension": [
+        {
+          "url": "http://fhir.openmrs.org/ext/patient/identifier#location",
+          "valueReference": {
+            "reference": "Location/35f62cd8-e88b-4b78-8150-ac172b014489",
+            "type": "Location",
+            "display": "Emergency - OPD"
+          }
+        }
+      ],
+      "use": "usual",
+      "type": {
+        "coding": [
+          {
+            "code": "05a29f94-c0ed-11e2-94be-8c13b969e334"
+          }
+        ],
+        "text": "OpenMRS ID"
+      },
+      "value": "100000Y"
+    }
+  ],
+  "active": true,
+  "name": [
+    {
+      "id": "fd9138b9-cb80-47fb-a361-e24349fe1d0e",
+      "text": "Siddharth Vaish",
+      "family": "Vaish",
+      "given": [
+        "Siddharth"
+      ]
+    }
+  ],
+  "gender": "male",
+  "birthDate": "1997-12-30",
+  "deceasedBoolean": false,
+  "address": [
+    {
+      "id": "da7a9549-5457-4a90-8346-155cdc917f37",
+      "use": "home",
+      "city": "",
+      "state": "",
+      "country": "Haiti"
+    }
+  ]
+}

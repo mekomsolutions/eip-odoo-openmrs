@@ -17,7 +17,9 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import com.ozonehis.eip.odoo.openmrs.Constants;
 import com.ozonehis.eip.odoo.openmrs.client.OdooClient;
 import com.ozonehis.eip.odoo.openmrs.client.OdooUtils;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.ProductHandler;
 import com.ozonehis.eip.odoo.openmrs.model.Product;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,7 @@ import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ServiceRequest;
+import org.hl7.fhir.r4.model.SupplyRequest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,15 +48,27 @@ class ProductHandlerTest {
 
     private static final String SERVICE_REQUEST_ID = "4ed050e1-c1be-4b4c-b407-c48d2db49b87";
 
+    private static final String SUPPLY_REQUEST_ID = "9gv050e1-s1be-5b4c-b107-c48d2db47r11";
+
+    private static final String ENCOUNTER_ID = "4d6d21cc-a6a5-4714-9c44-631d9d4cb3fc";
+
     private static final String TABLET_UNIT = "Tablet";
 
     private static final String COMPLETE_BLOOD_COUNT_CODE = "446ac22c-24f2-40ad-98f4-65f026f434e9";
+
+    private static final String ADHESIVE_CODE = "90165e66-615d-4219-ba2c-50ed46a51bff";
+
+    private static final String QUANTITY_CODE = "162396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+
+    private static final String ADHESIVE_DISPLAY = "Adhesive 5cm x 9m";
 
     private static final String COMPLETE_BLOOD_COUNT_DISPLAY = "Complete Blood Count";
 
     private static final String COMPLETE_BLOOD_COUNT_ID = "3d597a15-b08f-4c35-8a42-0c15f9a19fa6";
 
     private static final String PRACTITIONER_ID = "e5ca6578-fb37-4900-a054-c68db82a551c";
+
+    private static final String PATIENT_ID = "3ee4f5fc-6299-4c0e-a56e-dad957118edc";
 
     @Mock
     private OdooClient odooClient;
@@ -135,6 +150,33 @@ class ProductHandlerTest {
     }
 
     @Test
+    public void shouldReturnProductWhenOnlyOneIdFoundMatchingSupplyRequestId() {
+        // Setup
+        SupplyRequest supplyRequest = getSupplyRequest();
+
+        Map<String, Object> productMap =
+                getProductMap(1, "162396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 123, "Adhesive 5cm x 9m");
+        Object[] products = {productMap};
+
+        // Mock behavior
+        when(odooClient.searchAndRead(
+                        Constants.IR_MODEL,
+                        asList(asList("model", "=", Constants.PRODUCT_MODEL), asList("name", "=", ADHESIVE_CODE)),
+                        null))
+                .thenReturn(products);
+
+        // Act
+        Product result = productHandler.getProduct(supplyRequest);
+
+        // Verify
+        assertNotNull(result);
+        assertEquals(123, result.getProductResId());
+        assertEquals("162396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", result.getProductName());
+        assertEquals(1, result.getProductId());
+        assertEquals("Adhesive 5cm x 9m", result.getProductDisplayName());
+    }
+
+    @Test
     public void shouldThrowErrorWhenResourceIsUnsupported() {
         // Setup
         Resource resource = new Patient();
@@ -213,5 +255,21 @@ class ProductHandlerTest {
         serviceRequest.setRequester(requester);
 
         return serviceRequest;
+    }
+
+    public SupplyRequest getSupplyRequest() {
+        SupplyRequest supplyRequest = new SupplyRequest();
+        supplyRequest.setId(SUPPLY_REQUEST_ID);
+        supplyRequest.setItem(
+                new Reference().setReference("MedicalSupply/" + ADHESIVE_CODE).setDisplay(ADHESIVE_DISPLAY));
+        supplyRequest.setReasonReference(Collections.singletonList(
+                new Reference().setType("Encounter").setReference("Encounter/" + ENCOUNTER_ID)));
+        supplyRequest.setQuantity(new Quantity().setValue(10).setCode(QUANTITY_CODE));
+        supplyRequest.setRequester(new Reference().setReference(PRACTITIONER_ID).setDisplay("Nurse Jane"));
+        supplyRequest.setDeliverTo(
+                new Reference().setReference("Patient/" + PATIENT_ID).setDisplay("Tim"));
+        supplyRequest.setStatus(SupplyRequest.SupplyRequestStatus.ACTIVE);
+
+        return supplyRequest;
     }
 }

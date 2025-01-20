@@ -10,7 +10,7 @@ package com.ozonehis.eip.odoo.openmrs.processors;
 import static org.openmrs.eip.fhir.Constants.HEADER_FHIR_EVENT_TYPE;
 
 import com.ozonehis.eip.odoo.openmrs.Constants;
-import com.ozonehis.eip.odoo.openmrs.handlers.SaleOrderHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.SaleOrderHandler;
 import com.ozonehis.eip.odoo.openmrs.model.SaleOrder;
 import java.util.HashMap;
 import java.util.List;

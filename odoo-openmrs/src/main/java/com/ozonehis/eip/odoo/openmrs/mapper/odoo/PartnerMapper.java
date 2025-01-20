@@ -8,8 +8,8 @@
 package com.ozonehis.eip.odoo.openmrs.mapper.odoo;
 
 import com.ozonehis.eip.odoo.openmrs.client.OdooUtils;
-import com.ozonehis.eip.odoo.openmrs.handlers.CountryHandler;
-import com.ozonehis.eip.odoo.openmrs.handlers.CountryStateHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.CountryHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.CountryStateHandler;
 import com.ozonehis.eip.odoo.openmrs.mapper.ToOdooMapping;
 import com.ozonehis.eip.odoo.openmrs.model.Partner;
 import java.util.ArrayList;
