@@ -7,6 +7,7 @@
  */
 package com.ozonehis.eip.odoo.openmrs.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
@@ -39,8 +40,10 @@ public class SaleOrder implements OdooResource {
     private String orderTypeName;
 
     @JsonProperty("odoo.customer.weight.field")
+    @JsonIgnore
     private String partnerWeight;
 
     @JsonProperty("odoo.customer.dob.field")
+    @JsonIgnore
     private String partnerBirthDate;
 }

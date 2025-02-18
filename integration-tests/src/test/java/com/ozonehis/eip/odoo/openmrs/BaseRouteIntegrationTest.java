@@ -88,17 +88,11 @@ public abstract class BaseRouteIntegrationTest {
 
     private static final String odooCustomerDobField = "x_customer_dob";
 
-    protected static final List<String> orderDefaultAttributes = asList(
-            "id",
-            "client_order_ref",
-            "partner_id",
-            "state",
-            "order_line",
-            odooCustomerWeightField,
-            odooCustomerDobField);
+    protected static final List<String> orderDefaultAttributes =
+            asList("id", "client_order_ref", "partner_id", "state", "order_line");
 
     protected static final List<String> partnerDefaultAttributes =
-            asList("id", "name", "ref", "street", "street2", "city", "zip", "active", "comment", odooCustomerDobField);
+            asList("id", "name", "ref", "street", "street2", "city", "zip", "active", "comment");
 
     protected WireMockServer wireMockServer = new WireMockServer(8080);
 

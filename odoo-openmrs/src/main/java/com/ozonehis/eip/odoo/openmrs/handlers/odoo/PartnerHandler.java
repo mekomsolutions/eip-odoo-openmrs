@@ -46,8 +46,7 @@ public class PartnerHandler {
     public List<String> partnerDefaultAttributes;
 
     public Partner getPartnerByID(String partnerRefID) {
-        partnerDefaultAttributes = asList(
-                "id", "name", "ref", "street", "street2", "city", "zip", "active", "comment", odooCustomerDobField);
+        partnerDefaultAttributes = asList("id", "name", "ref", "street", "street2", "city", "zip", "active", "comment");
         Object[] records = odooClient.searchAndRead(
                 Constants.PARTNER_MODEL, List.of(asList("ref", "=", partnerRefID)), partnerDefaultAttributes);
         if (records == null) {

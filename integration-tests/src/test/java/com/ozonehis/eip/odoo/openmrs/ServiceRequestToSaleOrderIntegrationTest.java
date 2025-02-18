@@ -122,8 +122,8 @@ public class ServiceRequestToSaleOrderIntegrationTest extends BaseRouteIntegrati
         assertNotNull(createdSaleOrder);
         assertEquals(ENCOUNTER_PART_OF_UUID, createdSaleOrder.getOrderClientOrderRef());
         assertEquals("draft", createdSaleOrder.getOrderState());
-        assertEquals("77.0 kg", createdSaleOrder.getPartnerWeight());
-        assertEquals("1984-01-01", createdSaleOrder.getPartnerBirthDate());
+        //        assertEquals("77.0 kg", createdSaleOrder.getPartnerWeight());
+        //        assertEquals("1984-01-01", createdSaleOrder.getPartnerBirthDate());
 
         // verify sale order has sale order line
         assertFalse(createdSaleOrder.getOrderLine().isEmpty());
@@ -192,7 +192,7 @@ public class ServiceRequestToSaleOrderIntegrationTest extends BaseRouteIntegrati
         assertNotNull(createdSaleOrder);
         assertEquals(ENCOUNTER_PART_OF_UUID, createdSaleOrder.getOrderClientOrderRef());
         assertEquals("draft", createdSaleOrder.getOrderState());
-        assertEquals("false", createdSaleOrder.getPartnerWeight());
+        //        assertEquals("false", createdSaleOrder.getPartnerWeight());
 
         // verify sale order has sale order line
         assertFalse(createdSaleOrder.getOrderLine().isEmpty());

@@ -7,6 +7,7 @@
  */
 package com.ozonehis.eip.odoo.openmrs.client;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Field;
@@ -36,7 +37,7 @@ public class OdooUtils {
             T obj = mapper.convertValue(data, objectClass);
 
             for (Field field : obj.getClass().getDeclaredFields()) {
-                if (field.isAnnotationPresent(JsonProperty.class)) {
+                if (field.isAnnotationPresent(JsonProperty.class) && !field.isAnnotationPresent(JsonIgnore.class)) {
                     JsonProperty jsonProperty = field.getAnnotation(JsonProperty.class);
                     String propertyValue = environment.getProperty(jsonProperty.value());
                     if (propertyValue != null && data.containsKey(propertyValue)) {
@@ -59,7 +60,7 @@ public class OdooUtils {
 
         for (Field field : fields) {
             field.setAccessible(true);
-            if (field.isAnnotationPresent(JsonProperty.class)) {
+            if (field.isAnnotationPresent(JsonProperty.class) && !field.isAnnotationPresent(JsonIgnore.class)) {
                 JsonProperty jsonProperty = field.getAnnotation(JsonProperty.class);
                 String propertyValue = environment.getProperty(jsonProperty.value());
                 String key = propertyValue == null ? jsonProperty.value() : propertyValue;
